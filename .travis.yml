@@ -5,6 +5,6 @@ rvm:
 before_script:
   - docker pull buildpack-deps:bionic-scm
   - docker pull buildpack-deps:xenial-scm
-script: "make containers"
+script: "make container-bionic"
 services:
   - docker
