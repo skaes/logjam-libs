@@ -7,12 +7,10 @@ before_script:
 - eval "$(ssh-agent -s)"
 - chmod 600 ./railsexpress-key
 - ssh-add ./railsexpress-key
-- cat ./dockerhub-token | docker login -u stkaes --password-stdin
+- cat ./docker-token | docker login -u stkaes --password-stdin
 script: make -j 4 containers release publish
 services:
 - docker
 before_install:
-- openssl aes-256-cbc -K $encrypted_0b2cc28b3f02_key -iv $encrypted_0b2cc28b3f02_iv
-  -in docker-token.enc -out docker-token -d
-- openssl aes-256-cbc -K $encrypted_0b2cc28b3f02_key -iv $encrypted_0b2cc28b3f02_iv
-  -in railsexpress-key.enc -out railsexpress-key -d
+- openssl aes-256-cbc -K $encrypted_0b2cc28b3f02_key -iv $encrypted_0b2cc28b3f02_iv -in secrets.tar.enc -out secrets.tar -d
+- tar xvf secrets.tar
