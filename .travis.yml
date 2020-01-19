@@ -1,7 +1,7 @@
 dist: xenial
 language: ruby
 rvm:
-  - 2.6.5
+  - 2.6
 before_script:
   - docker pull buildpack-deps:bionic-scm
   - docker pull buildpack-deps:xenial-scm
