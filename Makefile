@@ -30,7 +30,7 @@ container-xenial-usr-local:
 TAG ?= latest
 VERSION ?= $(shell ./bin/version)
 
-release: containers push
+release:
 	$(MAKE) $(MFLAGS) tag push TAG=$(VERSION)
 
 tag:
@@ -67,8 +67,14 @@ package-xenial-usr-local:
 
 LOGJAM_PACKAGE_HOST:=railsexpress.de
 LOGJAM_PACKAGE_USER:=uploader
-publish:
+
+.PHONY: publish publish-bionic publish-xenial
+publish: publish-bionic publish-xenial
+
+publish-bionic:
 	rsync -vrlptDz -e "ssh -l $(LOGJAM_PACKAGE_USER)" packages/ubuntu/bionic/* $(LOGJAM_PACKAGE_HOST):/var/www/packages/ubuntu/bionic/
 	ssh $(LOGJAM_PACKAGE_USER)@$(LOGJAM_PACKAGE_HOST) 'cd /var/www/packages/ubuntu/bionic && (dpkg-scanpackages . /dev/null | gzip >Packages.gz)'
+
+publish-xenial:
 	rsync -vrlptDz -e "ssh -l $(LOGJAM_PACKAGE_USER)" packages/ubuntu/xenial/* $(LOGJAM_PACKAGE_HOST):/var/www/packages/ubuntu/xenial/
 	ssh $(LOGJAM_PACKAGE_USER)@$(LOGJAM_PACKAGE_HOST) 'cd /var/www/packages/ubuntu/xenial && (dpkg-scanpackages . /dev/null | gzip >Packages.gz)'
