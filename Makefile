@@ -25,7 +25,7 @@ container-xenial:
 container-bionic-usr-local:
 	docker build -t "stkaes/logjam-libs:bionic-usr-local-latest" -f Dockerfile.bionic --build-arg prefix=/usr/local bin
 container-xenial-usr-local:
-	docker build -t "stkaes/logjam-libs:xenial-usr-local-lates1t" -f Dockerfile.xenial --build-arg prefix=/usr/local bin
+	docker build -t "stkaes/logjam-libs:xenial-usr-local-latest" -f Dockerfile.xenial --build-arg prefix=/usr/local bin
 
 TAG ?= latest
 VERSION ?= $(shell ./bin/version)
