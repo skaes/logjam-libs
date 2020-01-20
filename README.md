@@ -29,8 +29,10 @@ libraries do not interfere with system versions.
 
 ### Travis pipeline
 
-Upon code push, the Travis pipeline builds docker images and Debian packages for Ubuntu Xenial and
-Ubuntu Bionic and uploads the images to docker hub and the packages to railexpress.de.
+Upon code push, the Travis pipeline builds docker images and Debian packages for Ubuntu
+Xenial and Ubuntu Bionic and uploads the images to [docker
+hub](https://hub.docker.com/repository/docker/stkaes/logjam-libs) and the packages to
+[railsexpress.de](https://railexpress.de/packages/ubuntu).
 
 Note that this is a destructive operation and will overwrite existing images and packages
 on the package servers.
@@ -40,9 +42,9 @@ number before you push to github.
 
 The containers are:
 
-* stkaes/logjam-libs:bionic-usr-local-`<version>`
-* stkaes/logjam-libs:xenial-`<version>`
 * stkaes/logjam-libs:bionic-`<version>`
+* stkaes/logjam-libs:xenial-`<version>`
+* stkaes/logjam-libs:bionic-usr-local-`<version>`
 * stkaes/logjam-libs:xenial-usr-local-`<version>`
 
 The packages are:
