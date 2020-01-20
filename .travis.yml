@@ -8,7 +8,12 @@ before_script:
 - chmod 600 ./railsexpress-key
 - ssh-add ./railsexpress-key
 - cat ./docker-token | docker login -u stkaes --password-stdin
-script: make -j 4 containers release packages publish
+script: make $TARGET
+env:
+  - TARGET=container-bionic package-bionic push-bionic publish
+  - TARGET=container-xenial package-xenial push-xenial publish
+  - TARGET=container-bionic-usr-local package-bionic-usr-local push-bionic-usr-local publish
+  - TARGET=container-xenial-usr-local package-xenial-usr-local push-xenial-usr-local publish
 services:
 - docker
 before_install:

@@ -1,4 +1,4 @@
-.PHONY: install install-usr-local install-opt-logjam clean release publish tag push
+.PHONY: install install-usr-local install-opt-logjam clean
 
 install: install-usr-local
 
@@ -25,28 +25,56 @@ container-xenial:
 container-bionic-usr-local:
 	docker build -t "stkaes/logjam-libs:bionic-usr-local-latest" -f Dockerfile.bionic --build-arg prefix=/usr/local bin
 container-xenial-usr-local:
-	docker build -t "stkaes/logjam-libs:xenial-usr-local-latest" -f Dockerfile.xenial --build-arg prefix=/usr/local bin
+	docker build -t "stkaes/logjam-libs:xenial-usr-local-lates1t" -f Dockerfile.xenial --build-arg prefix=/usr/local bin
 
 TAG ?= latest
 VERSION ?= $(shell ./bin/version)
 
-release:
-	$(MAKE) $(MFLAGS) tag push TAG=$(VERSION)
+RELEASE:=release-bionic release-xenial release-bionic-usr-local release-xenial-usr-local
+.PHONY: release $(RELEASE)
 
-tag:
+release: $(RELEASE)
+
+release-bionic:
+	$(MAKE) $(MFLAGS) tag-bionic push-bionic TAG=$(VERSION)
+release-xenial:
+	$(MAKE) $(MFLAGS) tag-xenial push-xenial TAG=$(VERSION)
+release-bionic-usr-local:
+	$(MAKE) $(MFLAGS) tag-bionic-usr-local push-bionic-usr-local TAG=$(VERSION)
+release-xenial-usr-local:
+	$(MAKE) $(MFLAGS) tag-xenial-usr-local push-xenial-usr-local TAG=$(VERSION)
+
+TAGS:=tag-bionic tag-xenial tag-bionic-usr-local tag-xenial-usr-local
+.PHONY: tag $(TAGS)
+
+tag: $(TAGS)
+
+tag-bionic:
 	docker tag "stkaes/logjam-libs:bionic-latest" "stkaes/logjam-libs:bionic-$(TAG)"
+tag-xenial:
 	docker tag "stkaes/logjam-libs:xenial-latest" "stkaes/logjam-libs:xenial-$(TAG)"
+tag-bionic-usr-local:
 	docker tag "stkaes/logjam-libs:bionic-usr-local-latest" "stkaes/logjam-libs:bionic-usr-local-$(TAG)"
+tag-xenial-usr-local:
 	docker tag "stkaes/logjam-libs:xenial-usr-local-latest" "stkaes/logjam-libs:xenial-usr-local-$(TAG)"
 
-push:
+
+PUSHES:=push-bionic push-xenial push-bionic-usr-local push-xenial-usr-local
+.PHONY: push $(PUSHES)
+
+push: $(PUSHES)
+
+push-bionic:
 	docker push "stkaes/logjam-libs:bionic-$(TAG)"
+push-xenial:
 	docker push "stkaes/logjam-libs:xenial-$(TAG)"
+push-bionic-usr-local:
 	docker push "stkaes/logjam-libs:bionic-usr-local-$(TAG)"
+push-xenial-usr-local:
 	docker push "stkaes/logjam-libs:xenial-usr-local-$(TAG)"
 
 
-PACKAGES:= package-bionic package-bionic-usr-local package-xenial package-xenial-usr-local
+PACKAGES:=package-bionic package-bionic-usr-local package-xenial package-xenial-usr-local
 .PHONY: packages $(PACKAGES)
 
 packages: $(PACKAGES)
@@ -78,3 +106,6 @@ publish-bionic:
 publish-xenial:
 	rsync -vrlptDz -e "ssh -l $(LOGJAM_PACKAGE_USER)" packages/ubuntu/xenial/* $(LOGJAM_PACKAGE_HOST):/var/www/packages/ubuntu/xenial/
 	ssh $(LOGJAM_PACKAGE_USER)@$(LOGJAM_PACKAGE_HOST) 'cd /var/www/packages/ubuntu/xenial && (dpkg-scanpackages . /dev/null | gzip >Packages.gz)'
+
+.PHONY: all
+all: containers tag push release packages publish
