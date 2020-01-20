@@ -26,6 +26,16 @@ packages in the given directory, following standard Linux conventions. It defaul
 Another good choice is `--prefix=/opt/logjam`, which makes sure that the logjam provided
 libraries do not interfere with system versions.
 
+If you are using Homebrew as your package manager on Mac OS it is recommended to install
+the libraries with `--without-documentation` to prevent issues arising from trying to
+validate XML files that can seemingly only be validated when `docbook-xsl-nons` is
+installed.
+
+If you want to get rid of the installed software, run
+```
+./bin/install-libs uninstall
+```
+
 
 ### Travis pipeline
 
