@@ -25,6 +25,7 @@ files "#{prefix}/share/*"
 depends "libc6"
 depends "zlib1g"
 depends "openssl"
+depends "libuuid1"
 if codename == "bionic"
   depends "libcurl4"
 else
