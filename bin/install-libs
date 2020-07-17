@@ -215,7 +215,7 @@ function handle_zeromq()
     if [ "$documentation" == "0" ]; then
       additional_configure_flags="--without-documentation"
     fi
-    test -f config.status || (sh autogen.sh && ./configure --prefix=$prefix $additional_configure_flags)
+    test -f config.status || (sh autogen.sh && ./configure --prefix=$prefix --with-libsodium $additional_configure_flags)
     make -j4
     $LSUDO make $cmd
     $LSUDO $ldconfig
