@@ -1,12 +1,20 @@
-.PHONY: install install-usr-local install-opt-logjam clean
+.PHONY: install install-usr-local install-opt-logjam uninstall uninstall-usr-local uninstall-opt-logjam clean
 
 install: install-usr-local
 
 install-usr-local:
-	./bin/install-libs
+	./bin/install-libs install
 
 install-opt-logjam:
-	./bin/install-libs --prefix=/opt/logjam
+	./bin/install-libs --prefix=/opt/logjam install
+
+uninstall: uninstall-usr-local
+
+uninstall-usr-local:
+	./bin/install-libs uninstall
+
+uninstall-opt-logjam:
+	./bin/install-libs --prefix=/opt/logjam uninstall
 
 clean:
 	rm -rf builds/repos/*

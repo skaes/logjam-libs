@@ -29,7 +29,7 @@ while (( $# > 0 )); do
         --without-documentation)
             documentation=0; shift;;
         --*)
-            echo "$(basename $0) [--force] [--cached] [--without-documentation] [--build-dir dir] [--prefix dir] [install|uninstall]"; exit 0;;
+            echo "$(basename $0) [--force] [--cached] [--with-documentation] [--build-dir dir] [--prefix dir] [install|uninstall]"; exit 0;;
         *) break ;;
     esac
 done
@@ -69,14 +69,14 @@ echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
 
 function handle_cmake()
 {
-    v=3.12.1
+    v=3.17.3
     if [ $cmd == "reset" ]; then
         rm -rf $d
         return
     fi
     d=cmake
     f="cmake-$v-$(uname -s)-x86_64.tar.gz"
-    test -f $f || wget -nv https://cmake.org/files/v3.12/$f
+    test -f $f || wget -nv https://cmake.org/files/v3.17/$f
     test -d $d || (mkdir $d && tar xzf $f -C $d --strip-components=$cmake_strip)
     echo "using CMAKE=$(which cmake)"
 }
@@ -91,7 +91,7 @@ function handle_prometheus_cpp()
     test -d $d || git clone https://github.com/jupp0r/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="e14ba416e9bcde4439a3bf14fbdb93ef35321ae4" # 0.6.0
+    expected_revision="023c93e4e504d0954b01cdde13bd293865880388" # 0.9.0
     if [ "$revision" != "$expected_revision" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
@@ -101,12 +101,13 @@ function handle_prometheus_cpp()
     [ $forced == "1" ] && git clean -qfdx && rm -rf _build
     mkdir -p _build
     cd _build
-    cmake  -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
+    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
     if [ "$cmd" == "install" ]; then
         make -j4
         $LSUDO make install
     else
         $LSUDO xargs rm < install_manifest.txt
+        $LSUDO rm -rf $prefix/include/prometheus $prefix/lib/cmake/prometheus-cpp
     fi
     $LSUDO $ldconfig
     cd ../..
@@ -122,7 +123,7 @@ function handle_mongoc()
     test -d $d || git clone https://github.com/mongodb/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="71d7eaef31db31483cbb952d24d836c9e0d20b86" # 1.14.0
+    expected_revision="ca290bad07a2aa7d750989284f7e410376e31d72" # 1.16.2
     if [ "$revision" != "$expected_revision" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
@@ -139,6 +140,7 @@ function handle_mongoc()
         $LSUDO make install
     else
         $LSUDO xargs rm < install_manifest.txt
+        $LSUDO rm -rf $prefix/include/libmongoc-1.0 $prefix/include/libbson-1.0 $prefix/lib/cmake/*mongoc-*1.0 $prefix/lib/cmake/*bson*1.0 $prefix/share/mongo-c-driver
     fi
     $LSUDO $ldconfig
     cd ../..
@@ -171,14 +173,14 @@ function handle_json_c()
 
 function handle_sodium()
 {
-    v=1.0.17
+    v=1.0.18
     d=libsodium-$v
     if [ $cmd == "reset" ]; then
         rm -rf $d
         return
     fi
     f=${d}.tar.gz
-    test -f $f && [ $forced != "1" ] || wget -nv https://github.com/jedisct1/libsodium/releases/download/$v/$f
+    test -f $f && [ $forced != "1" ] || wget -nv https://github.com/jedisct1/libsodium/releases/download/$v-RELEASE/$f
     test -d $d && [ $forced != "1" ] || tar xzvf $f
     cd $d
     [ $forced == "1" ] && rm -f config.status
@@ -186,12 +188,15 @@ function handle_sodium()
     make -j4
     $LSUDO make $cmd
     $LSUDO $ldconfig
+    if [ "$cmd" != "install" ]; then
+        $LSUDO rm -rf $prefix/include/sodium
+    fi
     cd ..
 }
 
 function handle_zeromq()
 {
-    d=zeromq4-1
+    d=libzmq
     if [ $cmd == "reset" ]; then
         rm -rf $d
         return
@@ -199,7 +204,7 @@ function handle_zeromq()
     test -d $d || git clone https://github.com/skaes/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="973d8c9f52cef68e729f0122adc023ceaf3e85bf" # 4.1.5 with thread name patch
+    expected_revision="a84ffa12b2eb3569ced199660bac5ad128bff1f0" # 4.3.2
     if [ "$revision" != "" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
@@ -227,7 +232,7 @@ function handle_czmq()
     test -d $d || git clone https://github.com/skaes/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="13cfd790c94434f6350a9d5442f29ab2a8bb0c07" # master Sat Mar 16 19:51:26 2019 +0000
+    expected_revision="614572bf207dc89b35f2ef19c698b5d51861dd0b" # master Sun Jun 28 19:59:14 2020 +0200
     if [ "$revision" != "" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
@@ -237,13 +242,13 @@ function handle_czmq()
     if [ "$documentation" == "0" ]; then
       additional_configure_flags="--with-docs=no"
     fi
-    test -f config.status || (
-      sh autogen.sh &&
-      ./configure --prefix=$prefix $additional_configure_flags
-    )
+    test -f config.status || (sh autogen.sh && ./configure --prefix=$prefix $additional_configure_flags)
     make -j4
     $LSUDO make $cmd
     $LSUDO $ldconfig
+    if [ "$cmd" != "install" ]; then
+        $LSUDO rm -rf $prefix/share/zproject/czmq
+    fi
     cd ..
 }
 
@@ -257,18 +262,25 @@ function handle_snappy()
     test -d $d || git clone https://github.com/skaes/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="10c7088336f490e646de7d40e9ace0958b269047" # 1.1.3 with pkg-config patch
+    expected_revision="e8a4e3c6ad754e976375a9963e198b07522f6091" # 1.1.8 with pkg-config patch
     if [ "$revision" != "" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
         git checkout $expected_revision
     fi
     [ $forced == "1" ] && git clean -qfdx
-    test -f config.status || (sh autogen.sh && ./configure --prefix=$prefix)
-    make -j4
-    $LSUDO make $cmd
+    mkdir -p _build
+    cd _build
+    cmake -DBUILD_SHARED_LIBS=ON -DSNAPPY_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
+    if [ "$cmd" == "install" ]; then
+        make -j4
+        $LSUDO make install
+    else
+        $LSUDO xargs rm < install_manifest.txt
+        $LSUDO rm -rf $prefix/lib/cmake/Snappy
+    fi
     $LSUDO $ldconfig
-    cd ..
+    cd ../..
 }
 
 function handle_lz4()
@@ -281,7 +293,7 @@ function handle_lz4()
     test -d $d || git clone https://github.com/lz4/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="641b453d9db536ee020851bfcb1dc39f61006f0a" # master (1.8.3)
+    expected_revision="fdf2ef5809ca875c454510610764d9125ef2ebbd" #  1.9.2
     if [ "$revision" != "" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
@@ -289,6 +301,7 @@ function handle_lz4()
     fi
     [ $forced == "1" ] && git clean -qfdx
     make -j4 PREFIX=$prefix
+    $LSUDO rm -f $prefix/bin/lz4 $prefix/bin/lz4c $prefix/bin/lz4cat $prefix/bin/unlz4
     $LSUDO make $cmd PREFIX=$prefix
     $LSUDO $ldconfig
     cd ..
@@ -296,7 +309,7 @@ function handle_lz4()
 
 function handle_microhttpd()
 {
-    v=0.9.63
+    v=0.9.71
     d=libmicrohttpd
     if [ $cmd == "reset" ]; then
         rm -rf $d
