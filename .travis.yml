@@ -20,6 +20,6 @@ jobs:
     - script:
         - make container-xenial package-xenial push-xenial publish-xenial
     - script:
-        - make container-bionic-usr-local package-bionic-usr-local push-bionic-usr-local publish-bionic
+        - make container-bionic-usr-local package-bionic-usr-local push-bionic-usr-local publish-bionic-usr-local
     - script:
-        - make container-xenial-usr-local package-xenial-usr-local push-xenial-usr-local publish-xenial
+        - make container-xenial-usr-local package-xenial-usr-local push-xenial-usr-local publish-xenial-usr-local
