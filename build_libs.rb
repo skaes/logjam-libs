@@ -26,7 +26,7 @@ depends "libc6"
 depends "zlib1g"
 depends "openssl"
 depends "libuuid1"
-if codename == "bionic"
+if codename == "bionic" || codename == "focal"
   depends "libcurl4"
 else
   depends "libcurl3"
