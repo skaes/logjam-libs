@@ -1,4 +1,6 @@
-## logjam-libs
+# logjam-libs
+
+## About
 
 logjam-libs provides methods to compile and install system libraries required by the
 logjam-tools package.
@@ -13,6 +15,8 @@ The following packages are included:
 * libsnappy
 * lz4
 * microhttpd
+
+[![Travis](https://travis-ci.org/skaes/logjam-libs.svg?branch=master)](https://travis-ci.org/github/skaes/logjam-libs)
 
 
 ## Usage
