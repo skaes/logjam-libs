@@ -48,28 +48,28 @@ Xenial and Ubuntu Bionic and uploads the images to [docker
 hub](https://hub.docker.com/repository/docker/stkaes/logjam-libs) and the packages to
 [railsexpress.de](https://railsexpress.de/packages/ubuntu).
 
-Note that this is a destructive operation and will overwrite existing images and packages
-on the package servers.
-
 Containers and packages are versioned. Edit `bin/version` to increment the version
-number before you push to github.
+number before you push to Github, if you want to build a new package.
 
 The containers are:
 
+* stkaes/logjam-libs:focal-`<version>`
 * stkaes/logjam-libs:bionic-`<version>`
 * stkaes/logjam-libs:xenial-`<version>`
+* stkaes/logjam-libs:focal-usr-local-`<version>`
 * stkaes/logjam-libs:bionic-usr-local-`<version>`
 * stkaes/logjam-libs:xenial-usr-local-`<version>`
 
 The packages are:
 
+* focal/logjam-libs_`<version>`_amd64.deb
 * bionic/logjam-libs_`<version>`_amd64.deb
 * xenial/logjam-libs_`<version>`_amd64.deb
+* focal/logjam-libs-usr-local_`<version>`_amd64.deb
 * bionic/logjam-libs-usr-local_`<version>`_amd64.deb
 * xenial/logjam-libs-usr-local_`<version>`_amd64.deb
 
 The `usr-local` packages/containers are built with prefix `/usr/local`, the other ones use `/opt/logjam`.
-
 
 ## Building containers and packages locally
 
