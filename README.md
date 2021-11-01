@@ -1,5 +1,8 @@
 # logjam-libs
 
+[![build](https://github.com/skaes/logjam-libs/actions/workflows/build.yml/badge.svg)](https://github.com/skaes/logjam-libs/actions/workflows/build.yml)
+
+
 ## About
 
 logjam-libs provides methods to compile and install system libraries required by the
@@ -15,8 +18,6 @@ The following packages are included:
 * libsnappy
 * lz4
 * microhttpd
-
-[![Travis](https://travis-ci.org/skaes/logjam-libs.svg?branch=master)](https://travis-ci.org/github/skaes/logjam-libs)
 
 
 ## Usage
