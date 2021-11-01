@@ -42,10 +42,10 @@ If you want to get rid of the installed software, run
 ```
 
 
-### Travis pipeline
+### CI/CD pipeline
 
-Upon code push, the Travis pipeline builds docker images and Debian packages for Ubuntu
-Xenial and Ubuntu Bionic and uploads the images to [docker
+Upon code push, the GitHub Actions workflow builds docker images and Debian packages for
+Ubuntu Focal, Bionic and Xenial and uploads the images to [docker
 hub](https://hub.docker.com/repository/docker/stkaes/logjam-libs) and the packages to
 [railsexpress.de](https://railsexpress.de/packages/ubuntu).
 
