@@ -53,12 +53,16 @@ case $OSTYPE in
         export CXX=clang++
         ldconfig=/usr/bin/true
         cmake_strip=3
+        cmake_archive=macos-universal
+        cmake_cmd="cmake -DCMAKE_MACOSX_RPATH=ON"
         ;;
-    *)
+    linux*)
         export CC=gcc
         export CXX=g++
         ldconfig=ldconfig
         cmake_strip=1
+        cmake_archive="linux-x86_64"
+        cmake_cmd=cmake
         ;;
 esac
 
@@ -69,14 +73,16 @@ echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
 
 function handle_cmake()
 {
-    v=3.17.3
+    patch=5
+    major=3.23
+    v=$major.$patch
     if [ $cmd == "reset" ]; then
         rm -rf $d
         return
     fi
     d=cmake
-    f="cmake-$v-$(uname -s)-x86_64.tar.gz"
-    test -f $f || wget -nv https://cmake.org/files/v3.17/$f
+    f="cmake-$v-$cmake_archive.tar.gz"
+    test -f $f || wget -nv https://cmake.org/files/v$major/$f
     test -d $d || (mkdir $d && tar xzf $f -C $d --strip-components=$cmake_strip)
     echo "using CMAKE=$(which cmake)"
 }
@@ -101,7 +107,7 @@ function handle_prometheus_cpp()
     [ $forced == "1" ] && git clean -qfdx && rm -rf _build
     mkdir -p _build
     cd _build
-    cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
+    $cmake_cmd -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
     if [ "$cmd" == "install" ]; then
         make -j4
         $LSUDO make install
@@ -134,7 +140,7 @@ function handle_mongoc()
     echo 1.16.2 > VERSION_CURRENT
     mkdir -p cmake-build
     cd cmake-build
-    cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_MACOSX_RPATH=ON ..
+    $cmake_cmd -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix ..
     if [ "$cmd" == "install" ]; then
         make
         $LSUDO make install
@@ -162,12 +168,19 @@ function handle_json_c()
         [ $cached = 0 ] && git fetch
         git checkout $expected_revision
     fi
-    [ $forced == "1" ] && git clean -qfdx
-    test -f config.status || (sh autogen.sh && ./configure --prefix=$prefix)
-    make -j4
-    $LSUDO make $cmd
+    [ $forced == "1" ] && git clean -qfdx && rm -rf cmake-build
+    mkdir -p cmake-build
+    cd cmake-build
+    $cmake_cmd -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
+    if [ "$cmd" == "install" ]; then
+        make -j4
+        $LSUDO make install
+    else
+        $LSUDO xargs rm < install_manifest.txt
+        $LSUDO rm -rf $prefix/include/json-c $prefix/lib/cmake/json-c
+    fi
     $LSUDO $ldconfig
-    cd ..
+    cd ../..
 }
 
 
@@ -271,7 +284,7 @@ function handle_snappy()
     [ $forced == "1" ] && git clean -qfdx
     mkdir -p _build
     cd _build
-    cmake -DBUILD_SHARED_LIBS=ON -DSNAPPY_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
+    $cmake_cmd -DBUILD_SHARED_LIBS=ON -DSNAPPY_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_INSTALL_LIBDIR=$prefix/lib ..
     if [ "$cmd" == "install" ]; then
         make -j4
         $LSUDO make install
