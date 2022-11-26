@@ -22,6 +22,8 @@ files "#{prefix}/include/*"
 files "#{prefix}/lib/*"
 files "#{prefix}/share/*"
 
+keep_modified_files!
+
 depends "libc6"
 depends "zlib1g"
 depends "openssl"

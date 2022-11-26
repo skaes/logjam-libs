@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/skaes/fpm-fry.git
-  revision: b97fca631dc61d6775d4dee7f5adade68f8b7503
+  revision: 56d34eb7ae2f69c523fb1ba29ec9560417caa191
   branch: support-file-modifications
   specs:
     fpm-fry (0.5.1)

@@ -101,8 +101,6 @@ push-xenial-usr-local:
 PACKAGES:=package-focal package-focal-usr-local package-bionic package-bionic-usr-local package-xenial package-xenial-usr-local
 .PHONY: packages $(PACKAGES)
 
-export FPM_ALLOW_MODIFIED_FILES=1
-
 packages: $(PACKAGES)
 
 package-focal:
