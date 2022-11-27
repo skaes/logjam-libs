@@ -103,23 +103,29 @@ PACKAGES:=package-focal package-focal-usr-local package-bionic package-bionic-us
 
 packages: $(PACKAGES)
 
+ifeq ($(V),1)
+override V:=--verbose
+else
+override V:=
+endif
+
 package-focal:
-	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook --update=always stkaes/logjam-libs:focal-latest build_libs.rb
+	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) --update=always stkaes/logjam-libs:focal-latest build_libs.rb
 	mkdir -p packages/ubuntu/focal && mv *.deb packages/ubuntu/focal
 package-bionic:
-	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook --update=always stkaes/logjam-libs:bionic-latest build_libs.rb
+	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) --update=always stkaes/logjam-libs:bionic-latest build_libs.rb
 	mkdir -p packages/ubuntu/bionic && mv *.deb packages/ubuntu/bionic
 package-xenial:
-	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook --update=always stkaes/logjam-libs:xenial-latest build_libs.rb
+	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) --update=always stkaes/logjam-libs:xenial-latest build_libs.rb
 	mkdir -p packages/ubuntu/xenial && mv *.deb packages/ubuntu/xenial
 package-focal-usr-local:
-	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook --update=always stkaes/logjam-libs:focal-usr-local-latest build_libs.rb
+	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) --update=always stkaes/logjam-libs:focal-usr-local-latest build_libs.rb
 	mkdir -p packages/ubuntu/focal && mv *.deb packages/ubuntu/focal
 package-bionic-usr-local:
-	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook --update=always stkaes/logjam-libs:bionic-usr-local-latest build_libs.rb
+	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) --update=always stkaes/logjam-libs:bionic-usr-local-latest build_libs.rb
 	mkdir -p packages/ubuntu/bionic && mv *.deb packages/ubuntu/bionic
 package-xenial-usr-local:
-	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook --update=always stkaes/logjam-libs:xenial-usr-local-latest build_libs.rb
+	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) --update=always stkaes/logjam-libs:xenial-usr-local-latest build_libs.rb
 	mkdir -p packages/ubuntu/xenial && mv *.deb packages/ubuntu/xenial
 
 
