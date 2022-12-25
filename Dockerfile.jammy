@@ -1,5 +1,6 @@
-FROM buildpack-deps:xenial-scm as builder
+FROM buildpack-deps:jammy-scm as builder
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install -y locales && \
     locale-gen en_US.UTF-8 && \
@@ -25,11 +26,11 @@ ADD . /tmp
 ARG prefix
 RUN /tmp/install-libs --prefix=$prefix --build-dir=/src
 
-FROM ubuntu:xenial
+FROM ubuntu:focal
 ARG prefix
 COPY --from=builder $prefix $prefix
 LABEL maintainer "Stefan Kaes <skaes@railsexpress.de>"
 
 RUN apt-get update && \
-        apt-get install -y libc6 zlib1g openssl libcurl3 && \
+        apt-get install -y libc6 zlib1g openssl libcurl4 && \
         rm -rf /var/lib/apt/lists/*
