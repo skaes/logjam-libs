@@ -97,7 +97,7 @@ function handle_prometheus_cpp()
     test -d $d || git clone https://github.com/jupp0r/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="023c93e4e504d0954b01cdde13bd293865880388" # 0.9.0
+    expected_revision="76470b3ec024c8214e1f4253fb1f4c0b28d3df94" # 1.0.1
     if [ "$revision" != "$expected_revision" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
