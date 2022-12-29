@@ -28,11 +28,7 @@ depends "libc6"
 depends "zlib1g"
 depends "openssl"
 depends "libuuid1"
-if codename == "bionic" || codename == "focal"
-  depends "libcurl4"
-else
-  depends "libcurl3"
-end
+depends "libcurl4"
 
 run "/bin/bash", "-c", "find #{prefix} | xargs touch -h"
 
