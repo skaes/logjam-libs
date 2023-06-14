@@ -53,7 +53,7 @@ case $OSTYPE in
         export CXX=clang++
         ldconfig=/usr/bin/true
         cmake_strip=3
-        cmake_archive=macos-universal
+        cmake_archive="macos-universal"
         cmake_cmd="cmake -DCMAKE_MACOSX_RPATH=ON"
         ;;
     linux*)
@@ -61,7 +61,7 @@ case $OSTYPE in
         export CXX=g++
         ldconfig=ldconfig
         cmake_strip=1
-        cmake_archive="linux-x86_64"
+        cmake_archive="linux-$(uname -m)"
         cmake_cmd=cmake
         ;;
 esac

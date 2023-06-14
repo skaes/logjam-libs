@@ -1,4 +1,5 @@
-FROM buildpack-deps:jammy-scm as builder
+ARG arch=
+FROM ${arch}buildpack-deps:jammy-scm as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && \
@@ -26,7 +27,7 @@ ADD . /tmp
 ARG prefix
 RUN /tmp/install-libs --prefix=$prefix --build-dir=/src
 
-FROM ubuntu:focal
+FROM ${arch}ubuntu:focal
 ARG prefix
 COPY --from=builder $prefix $prefix
 LABEL maintainer "Stefan Kaes <skaes@railsexpress.de>"
