@@ -27,7 +27,7 @@ ADD . /tmp
 ARG prefix
 RUN /tmp/install-libs --prefix=$prefix --build-dir=/src
 
-FROM ${arch}ubuntu:focal
+FROM ${arch}ubuntu:jammy
 ARG prefix
 COPY --from=builder $prefix $prefix
 LABEL maintainer "Stefan Kaes <skaes@railsexpress.de>"
