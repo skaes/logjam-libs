@@ -44,31 +44,27 @@ If you want to get rid of the installed software, run
 
 ### CI/CD pipeline
 
-Upon code push, the GitHub Actions workflow builds docker images and Debian packages for
-Ubuntu Focal, Bionic and Xenial and uploads the images to [docker
-hub](https://hub.docker.com/repository/docker/stkaes/logjam-libs) and the packages to
-[railsexpress.de](https://railsexpress.de/packages/ubuntu).
+Upon code push, the GitHub Actions workflow builds docker images and Debian
+packages for Ubuntu Jammy and Focal and uploads the images to [docker
+hub](https://hub.docker.com/repository/docker/stkaes/logjam-libs) and the
+packages to [railsexpress.de](https://railsexpress.de/packages/ubuntu).
 
 Containers and packages are versioned. Edit `bin/version` to increment the version
 number before you push to Github, if you want to build a new package.
 
 The containers are:
 
+* stkaes/logjam-libs:jammy-`<version>`
 * stkaes/logjam-libs:focal-`<version>`
-* stkaes/logjam-libs:bionic-`<version>`
-* stkaes/logjam-libs:xenial-`<version>`
+* stkaes/logjam-libs:jammy-usr-local-`<version>`
 * stkaes/logjam-libs:focal-usr-local-`<version>`
-* stkaes/logjam-libs:bionic-usr-local-`<version>`
-* stkaes/logjam-libs:xenial-usr-local-`<version>`
 
 The packages are:
 
+* jammy/logjam-libs_`<version>`_amd64.deb
 * focal/logjam-libs_`<version>`_amd64.deb
-* bionic/logjam-libs_`<version>`_amd64.deb
-* xenial/logjam-libs_`<version>`_amd64.deb
+* jammy/logjam-libs-usr-local_`<version>`_amd64.deb
 * focal/logjam-libs-usr-local_`<version>`_amd64.deb
-* bionic/logjam-libs-usr-local_`<version>`_amd64.deb
-* xenial/logjam-libs-usr-local_`<version>`_amd64.deb
 
 The `usr-local` packages/containers are built with prefix `/usr/local`, the other ones use `/opt/logjam`.
 
