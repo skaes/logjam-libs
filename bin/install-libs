@@ -217,7 +217,7 @@ function handle_zeromq()
     test -d $d || git clone https://github.com/skaes/${d}.git
     cd $d
     revision=$(git rev-parse HEAD)
-    expected_revision="616e9695dbdae13ebb07ac95a8407bf5ec9968f2" # v4.3.4-gcc11plus-fix
+    expected_revision="622fc6dde99ee172ebaa9c8628d85a7a1995a21d" # v4.3.5
     if [ "$revision" != "" ]; then
         git reset --hard
         [ $cached = 0 ] && git fetch
