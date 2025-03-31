@@ -120,22 +120,22 @@ override V:=
 endif
 
 package-noble:
-	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:noble-latest-$(ARCH) build_libs.rb
+	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:noble-latest-$(ARCH)
 	mkdir -p packages/ubuntu/noble && mv *.deb packages/ubuntu/noble
 package-jammy:
-	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:jammy-latest-$(ARCH) build_libs.rb
+	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:jammy-latest-$(ARCH)
 	mkdir -p packages/ubuntu/jammy && mv *.deb packages/ubuntu/jammy
 package-focal:
-	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:focal-latest-$(ARCH) build_libs.rb
+	LOGJAM_PREFIX=/opt/logjam bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:focal-latest-$(ARCH)
 	mkdir -p packages/ubuntu/focal && mv *.deb packages/ubuntu/focal
 package-noble-usr-local:
-	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:noble-usr-local-latest-$(ARCH) build_libs.rb
+	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:noble-usr-local-latest-$(ARCH)
 	mkdir -p packages/ubuntu/noble && mv *.deb packages/ubuntu/noble
 package-jammy-usr-local:
-	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:jammy-usr-local-latest-$(ARCH) build_libs.rb
+	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:jammy-usr-local-latest-$(ARCH)
 	mkdir -p packages/ubuntu/jammy && mv *.deb packages/ubuntu/jammy
 package-focal-usr-local:
-	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:focal-usr-local-latest-$(ARCH) build_libs.rb
+	LOGJAM_PREFIX=/usr/local bundle exec fpm-fry cook $(V) $(PLATFORM) --update=always stkaes/logjam-libs:focal-usr-local-latest-$(ARCH)
 	mkdir -p packages/ubuntu/focal && mv *.deb packages/ubuntu/focal
 
 
