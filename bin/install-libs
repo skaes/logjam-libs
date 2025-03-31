@@ -6,6 +6,11 @@ forced=0
 prefix=/usr/local
 cached=0
 documentation=0
+install_cmake=0
+
+if [ "$(which cmake)" == "" ]; then
+    install_cmake=1
+fi
 
 test -z "$LSUDO" && LSUDO="sudo"
 test "$(whoami)" = "root" && LSUDO=""
@@ -24,6 +29,8 @@ while (( $# > 0 )); do
             prefix="$2"; shift 2;;
         --prefix=*)
             prefix="${1#--prefix=}"; shift;;
+        --cmake)
+            install_cmake=1; shift;;
         --with-documentation)
             documentation=1; shift;;
         --without-documentation)
@@ -45,7 +52,10 @@ echo "library dependencies go into $prefix, forced=$forced, cmd=$cmd, build_dir=
 
 mkdir -p $build_dir
 cd $build_dir
-export PATH=$(pwd)/cmake/bin:$PATH
+
+if [ $install_cmake == 1 ]; then
+    export PATH=$(pwd)/cmake/bin:$PATH
+fi
 
 case $OSTYPE in
     darwin*)
@@ -73,6 +83,9 @@ echo "using PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
 
 function handle_cmake()
 {
+    if [ $install_cmake == 0 ]; then
+        return
+    fi
     patch=5
     major=3.23
     v=$major.$patch
