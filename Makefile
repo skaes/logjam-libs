@@ -50,7 +50,7 @@ container-focal-usr-local:
 	docker build -t "stkaes/logjam-libs:focal-usr-local-latest-$(ARCH)" -f Dockerfile.focal --build-arg prefix=/usr/local --build-arg arch=$(LIBARCH) bin
 
 TAG ?= latest
-VERSION ?= $(shell ./bin/version)
+VERSION ?= $(shell cat VERSION.txt)
 
 RELEASE:=release-noble release-noble-usr-local release-jammy release-jammy-usr-local release-focal release-focal-usr-local
 .PHONY: release $(RELEASE)
@@ -145,7 +145,6 @@ LOGJAM_PACKAGE_USER:=uploader
 .PHONY: publish publish-focal publish-jammy publish-focal-usr-local publish-jammy-usr-local
 publish: publish-jammy publish-focal publish-jammy-usr-local publish-focal-usr-local
 
-VERSION:=$(shell bin/version)
 PACKAGE_NAME:=logjam-libs_$(VERSION)_$(ARCH).deb
 PACKAGE_NAME_USR_LOCAL:=logjam-libs-usr-local_$(VERSION)_$(ARCH).deb
 
